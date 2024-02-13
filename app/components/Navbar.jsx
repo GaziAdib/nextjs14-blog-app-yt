@@ -1,8 +1,12 @@
 'use client';
+import { useSession } from "next-auth/react";
 import Image from "next/image"
 import Link from "next/link"
 
 const Navbar = () => {
+
+    const session = useSession();
+
     return (
         <nav className="bg-gray-800 dark:bg-gray-900">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -32,9 +36,10 @@ const Navbar = () => {
                         <Link href="/blogs" className="hover:text-gray-400 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium">
                             Home
                         </Link>
-                        <Link href="/blogs/add-blog" className="hover:text-gray-400 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium">
-                            Create Blog
-                        </Link>
+                        {session?.data?.user?.role == 'ADMIN' &&
+                            <Link href="/blogs/add-blog" className="hover:text-gray-400 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                                Create Blog
+                            </Link>}
                     </div>
                 </div>
             </div>
