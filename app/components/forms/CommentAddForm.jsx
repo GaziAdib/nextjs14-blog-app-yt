@@ -4,6 +4,7 @@ import { addCommentToBlog } from "@/actions/actions"
 import Button from "@/app/ui/Button"
 import Image from "next/image"
 import { useRef } from "react"
+import { toast } from "react-toastify"
 
 const CommentAddForm = ({ blogId }) => {
 
@@ -14,6 +15,17 @@ const CommentAddForm = ({ blogId }) => {
     const addCommentHandler = async (formData) => {
         await addCommentToBlog(blogId, formData)
         ref?.current?.reset();
+
+        toast.success('New Comment Added', {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+        });
     }
 
     return (

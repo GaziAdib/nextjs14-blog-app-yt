@@ -2,6 +2,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import Navbar from './components/Navbar'
 import { Providers } from './providers'
+import ToastComponent from './components/toaster/ToastComponent'
 
 
 
@@ -20,6 +21,7 @@ export default function RootLayout({ children }) {
         <Providers>
           <Navbar />
           {children}
+          <ToastComponent />
         </Providers>
       </body>
     </html>

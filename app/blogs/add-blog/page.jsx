@@ -7,7 +7,14 @@ import { redirect } from "next/navigation"
 const AddBlog = async () => {
     const session = await getServerSession(authOptions)
 
-    if (session?.user?.role !== 'ADMIN') {
+    // as i have the permissions i can see this page / routes
+
+    const checkPermissions = session?.user?.permissions?.includes('CREATE_BLOG');
+
+    const admin = session?.user?.role === 'ADMIN';
+
+    if (!admin && !checkPermissions) {
+        console.log('YOU CANNOT CREATE!')
         redirect('/')
     }
 

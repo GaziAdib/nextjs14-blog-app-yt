@@ -1,3 +1,4 @@
+"use client";
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react'
@@ -5,6 +6,8 @@ import React from 'react'
 const BlogItem = ({ blog }) => {
 
     const { id, title, imageUrl, description, category, } = blog || {};
+
+
     return (
         <div className="bg-gray-900 p-4 border-2 border-green-200 mx-2 my-2 rounded-lg shadow-md">
 
@@ -25,6 +28,8 @@ const BlogItem = ({ blog }) => {
 
             <p className="mb-2 max-w-md text-green-500 inline-block border-2 p-2 border-green-300 rounded-full">{category}</p>
             <p className="text-gray-300">{description.slice(0, 100)}...</p>
+
+            <button type='button' className='rounded-lg bg-red-700 text-center px-2 py-1  mt-4'>delete</button>
         </div>
     )
 }

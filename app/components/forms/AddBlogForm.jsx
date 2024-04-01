@@ -3,6 +3,7 @@
 import { addBlog } from "@/actions/actions";
 import Button from "@/app/ui/Button";
 import { useRef } from "react";
+import { toast } from "react-toastify";
 
 const AddBlogForm = () => {
 
@@ -12,6 +13,17 @@ const AddBlogForm = () => {
         await addBlog(formData);
         //refresh the form
         ref?.current?.reset();
+        // show toast 
+        toast.success('New Blog Added', {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+        });
     }
 
     return (

@@ -1,9 +1,14 @@
 "use client";
 import { deleteComment } from "@/actions/actions";
 import Button from "../ui/Button";
+import { useSession } from "next-auth/react";
+import { toast } from "react-toastify";
 
 const CommentItem = ({ comment }) => {
-    const { id, text, author, blogId } = comment || {};
+
+    const session = useSession();
+
+    const { id, text, authorId, blogId } = comment || {};
 
     const deleteCommentHandler = async (formData) => {
 
@@ -15,11 +20,21 @@ const CommentItem = ({ comment }) => {
 
         if (isDelete) {
             await deleteComment(commentId, blogId)
+
+            toast.error('Comment Deleted!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+
         }
 
-
     }
-
 
     return (
         <>
@@ -45,7 +60,7 @@ const CommentItem = ({ comment }) => {
                     </div>
 
                     {/* User Name */}
-                    <div className="font-bold text-gray-200">{author}</div>
+                    <div className="font-bold text-gray-200">{authorId}</div>
                 </div>
 
                 {/* Comment Content */}
@@ -53,7 +68,7 @@ const CommentItem = ({ comment }) => {
 
                 <form className="mt-2" action={deleteCommentHandler}>
                     <input type="hidden" name="id" value={id} />
-                    <Button label={'Delete'} color={'red'} />
+                    {session?.data?.user?.id === authorId && <Button label={'Delete'} color={'purple'} />}
                 </form>
             </div>
 
