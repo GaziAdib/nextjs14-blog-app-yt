@@ -11,8 +11,7 @@ const Search = () => {
     const { replace } = useRouter();
 
     const handleSearch = (query) => {
-        console.log('searched', query);
-
+    
         const params = new URLSearchParams(searchParams);
 
         if (query) {
