@@ -3,8 +3,10 @@
 import Button from "@/app/ui/Button";
 import { useRouter } from "next/navigation";
 import { useRef } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import TagsInput from "react-tagsinput";
+import 'react-tagsinput/react-tagsinput.css';
 
 const AddBlogForm = () => {
 
@@ -29,11 +31,9 @@ const AddBlogForm = () => {
 
     const router = useRouter();
 
-    const {register, handleSubmit, formState: {errors}} = useForm();
+    const {register, handleSubmit, control, formState: {errors}} = useForm();
 
     const onSubmit = async (data) => {
-        console.log(data);
-
         try {
             const res = await fetch("/api/admin/add-blog", {
                 method: "POST",
@@ -116,6 +116,31 @@ const AddBlogForm = () => {
                     className="mt-1 p-2 text-gray-600 w-full border rounded-md"
                     placeholder="Enter description"
                 ></textarea>
+            </div>
+
+            <div className="mb-4">
+            <label htmlFor="tags" className="block text-sm mt-2 p-1 font-medium text-gray-600 dark:text-gray-400">Job Responsibilities (UI Design, Testing, Coding) *</label>
+            <Controller
+                name="tags"
+                control={control}
+                defaultValue={[]}
+                render={({ field }) => (
+                <div className="my-3 py-2">
+                    <ul className="list-disc list-inside">
+                    {field?.value?.map((tag, index) => (
+                        <li key={index} className="bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300 mb-1 px-2 py-1 rounded-md">
+                        {tag}
+                        </li>
+                    ))}
+                    </ul>
+                    <TagsInput
+                    type="text"
+                    {...field}
+                    className="py-2 my-2 w-full border rounded-md focus:outline-none focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+                    />
+                </div>
+                )}
+            />
             </div>
 
             <div className="mb-4">

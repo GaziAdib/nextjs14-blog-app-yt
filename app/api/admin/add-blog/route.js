@@ -13,7 +13,7 @@ export async function POST(req, {params}) {
         const session = await getServerSession(authOptions);
 
 
-        const { imageUrl, title, category, description } = await req.json();
+        const { imageUrl, title, category, tags, description } = await req.json();
 
    
     
@@ -24,6 +24,7 @@ export async function POST(req, {params}) {
                 imageUrl: imageUrl ? imageUrl : null,
                 title,
                 category,
+                tags:tags, 
                 description,
                 authorId: session?.user?.id
             }

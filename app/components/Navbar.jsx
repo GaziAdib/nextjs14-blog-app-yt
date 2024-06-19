@@ -41,6 +41,12 @@ const Navbar = () => {
                             <Link href="/blogs/add-blog" className="hover:text-gray-400 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium">
                                 Create Blog
                             </Link>}
+                            
+                         {session?.data?.user?.role === 'ADMIN' || session?.data?.user?.role === 'USER' &&
+                            <Link href="/blogs/add-preference" className="hover:text-gray-400 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                                Update Preference
+                            </Link>}
+
                         {session?.data?.user?.role == 'ADMIN' &&
                             <Link href="/admin/dashboard" className="hover:text-gray-400 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium">
                                 Admin

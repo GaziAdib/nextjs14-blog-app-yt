@@ -11,7 +11,7 @@ const fetchBlogs = async (query="") => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            cache: 'no-cache' // to revalidate the cache or realtime see the blogs after you add
+            cache: 'no-store' // to revalidate the cache or realtime see the blogs after you add
         })
 
         if(res.ok) {

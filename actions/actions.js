@@ -224,3 +224,48 @@ export const assignPermission = async (userId, formData) => {
 
 
 
+
+// fetch All Blogs tags
+
+export const fetchAllTags = async () => {
+
+    const blogs = await prisma.blog.findMany({
+        select: {
+            tags: true
+        }
+    })
+    const alltags = [...new Set(blogs.flatMap(blog => blog.tags))]
+    return alltags
+
+}
+
+export const fetchPreferedBlogs = async () => {
+
+    const session = await getServerSession(authOptions);
+
+    // fetch user preferences topics
+
+    let currentUser = await prisma.user.findFirst({
+        where: {
+            id: session?.user?.id
+        },
+        select: {
+            interestedTopics: true
+        }
+    })
+
+    let topics = currentUser?.interestedTopics || [];
+
+    // now find all the matching blogs based on its tags and user preferences topic
+
+    const blogs = await prisma.blog.findMany({
+        where: {
+            tags: {
+                hasSome: topics
+            }
+        }
+    })
+
+    return blogs
+
+}
