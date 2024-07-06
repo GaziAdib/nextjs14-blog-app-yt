@@ -16,8 +16,8 @@ model User {
   email       String    @unique
   password    String
   role        Role      @default(USER)
-  permissions String[]
   interestedTopics String[]
+  permissions String[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   Comment     Comment[]
@@ -40,10 +40,10 @@ model Blog {
   imageUrl    String?
   title       String
   description String?
-  tags        String[]
   authorId    String    @db.ObjectId
   author      User?     @relation(fields: [authorId], references: [id])
   category    String
+  tags        String[]
   published   Boolean   @default(true)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt

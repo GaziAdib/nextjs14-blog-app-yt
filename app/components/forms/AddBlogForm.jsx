@@ -12,22 +12,6 @@ const AddBlogForm = () => {
 
     const ref = useRef();
 
-    // const addBlogHandler = async (formData) => {
-    //     // await addBlog(formData);
-    //     //refresh the form
-    //     ref?.current?.reset();
-    //     // show toast 
-    //     toast.success('New Blog Added', {
-    //         position: "top-right",
-    //         autoClose: 3000,
-    //         hideProgressBar: false,
-    //         closeOnClick: true,
-    //         pauseOnHover: true,
-    //         draggable: true,
-    //         progress: undefined,
-    //         theme: "dark",
-    //     });
-    // }
 
     const router = useRouter();
 
@@ -119,7 +103,7 @@ const AddBlogForm = () => {
             </div>
 
             <div className="mb-4">
-            <label htmlFor="tags" className="block text-sm mt-2 p-1 font-medium text-gray-600 dark:text-gray-400">Job Responsibilities (UI Design, Testing, Coding) *</label>
+            <label htmlFor="tags" className="block text-sm mt-2 p-1 font-medium text-gray-600 dark:text-gray-400">Blog Tags (UI Design, Testing, Coding) *</label>
             <Controller
                 name="tags"
                 control={control}
@@ -134,14 +118,17 @@ const AddBlogForm = () => {
                     ))}
                     </ul>
                     <TagsInput
-                    type="text"
-                    {...field}
-                    className="py-2 my-2 w-full border rounded-md focus:outline-none focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+                        type="text"
+                        {...field}
+                        className="py-2 my-2 w-full border rounded-md focus:outline-none focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
                     />
                 </div>
                 )}
             />
             </div>
+
+
+           
 
             <div className="mb-4">
                 <label htmlFor="category" className="block text-sm font-medium text-gray-600">

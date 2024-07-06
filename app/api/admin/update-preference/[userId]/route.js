@@ -1,50 +1,53 @@
 import { PrismaClient } from "@prisma/client";
-import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
-
+import { revalidatePath } from "next/cache";
 
 const prisma = new PrismaClient();
 
 export async function PUT(req, {params}) {
-  
-    const userId = params?.userId || '';
-
     try {
 
-        const { selectedTags } = await req.json();
 
-         // Fetch current user's interested topics
+        const userId = params?.userId;
+
+        const { selectedTags  } = await req.json();
+
+        // logics
+        
+        // current user info or preferred topics
+
         let currentUser = await prisma.user.findFirst({
-        where: {
-          id: userId
-        },
-        select: {
-          interestedTopics: true
-        }
-      });
-
-
-    let currentTopics = currentUser?.interestedTopics || [];
-
-    // Merge current topics with selected tags, removing duplicates
-    let allTopics = [...new Set([...currentTopics, ...selectedTags])];
-
-        const updated_preference = await prisma.user.update({
             where: {
                 id: userId
+            },
+            select: {
+                interestedTopics: true
+            }
+        });
+
+        // merge his topics to selected topics
+        
+        let currentTopics = currentUser?.interestedTopics || [];
+
+        let allTopics = [...currentTopics, ...selectedTags];
+
+        const updatePreference = await prisma.user.update({
+            where: {
+                id: userId,
             },
             data: {
                 interestedTopics: allTopics
             }
-        })
+        });
 
-        revalidatePath(`/blogs/add-preference`)
+        revalidatePath(`/blogs/add-blog-preference`)
     
-        return NextResponse.json({ message: 'User Preferences Updated Successfully!' }, { status: 201 });
+        return NextResponse.json({ message: 'User Preference Updated Successfully!' }, { status: 201 });
 
-    
-    } catch (error) {
+    } 
+
+     catch (error) {
         console.log("Error while Registeing", error);
-        return NextResponse.json({ message: 'Error Occured While Update Preference the user.' }, { status: 500 });
+        return NextResponse.json({ message: 'Error Occured While Registering the user.' }, { status: 500 });
     }
 }

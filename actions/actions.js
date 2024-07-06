@@ -223,49 +223,73 @@ export const assignPermission = async (userId, formData) => {
 
 
 
+// fetch All the blogs  tags
 
+export const fetchBlogsTags = async () => {
 
-// fetch All Blogs tags
+    try {
 
-export const fetchAllTags = async () => {
+        const blogs = await prisma.blog.findMany({
+            select: {
+                tags: true,
+            }
+        })
 
-    const blogs = await prisma.blog.findMany({
-        select: {
-            tags: true
-        }
-    })
-    const alltags = [...new Set(blogs.flatMap(blog => blog.tags))]
-    return alltags
+        const allUniqueTags = [...new Set(blogs?.flatMap((blog) => blog?.tags))]
+
+        return allUniqueTags;
+        
+    } catch (error) {
+        console.log(error);
+    }
+   
 
 }
 
-export const fetchPreferedBlogs = async () => {
+
+export const fetchMyPreferedBlogs = async () => {
 
     const session = await getServerSession(authOptions);
 
-    // fetch user preferences topics
+    try {
 
-    let currentUser = await prisma.user.findFirst({
-        where: {
-            id: session?.user?.id
-        },
-        select: {
-            interestedTopics: true
-        }
-    })
+        // fetch user preferences topics
 
-    let topics = currentUser?.interestedTopics || [];
-
-    // now find all the matching blogs based on its tags and user preferences topic
-
-    const blogs = await prisma.blog.findMany({
-        where: {
-            tags: {
-                hasSome: topics
+        let currentUser = await prisma.user.findFirst({
+            where: {
+                id: session?.user?.id
+            },
+            select: {
+                interestedTopics: true
             }
-        }
-    })
+        })
 
-    return blogs
+        let currentUserPreferedTopics = currentUser?.interestedTopics || [];
+
+        // now match it with all blogs tags;
+
+        const blogs = await prisma.blog.findMany({
+            where: {
+                tags: {
+                    hasSome: currentUserPreferedTopics
+                }
+            }
+        })
+
+
+        return blogs
+        
+    } catch (error) {
+        console.log(error);
+    }
+   
 
 }
+
+
+
+
+
+
+
+
