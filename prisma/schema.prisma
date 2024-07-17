@@ -44,6 +44,9 @@ model Blog {
   author      User?     @relation(fields: [authorId], references: [id])
   category    String
   tags        String[]
+  likes       Int       @default(0)
+  upvotes     Int       @default(0)
+  userLikes   String[]  
   published   Boolean   @default(true)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt

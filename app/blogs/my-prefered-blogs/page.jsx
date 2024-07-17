@@ -1,4 +1,4 @@
-import { fetchBlogs, fetchMyPreferedBlogs } from "@/actions/actions"
+import { fetchMyPreferedBlogs } from "@/actions/actions"
 import BlogItem from "@/app/components/BlogItem";
 
 const MyPreferedBlogsPage = async () => {

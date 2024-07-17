@@ -11,7 +11,7 @@ const BlogDetail = async ({ params }) => {
     const blog = await fetchSingleBlog(id);
 
     return (
-        <div className="">
+        <div className="container mx-auto py-4">
             <div className="text-center bg-gray-800 rounded-md border-2 border-green-600 shadow-md px-4 py-2 mx-3 my-3">
 
                 {
@@ -35,19 +35,22 @@ const BlogDetail = async ({ params }) => {
                     " {blog?.title} "
                 </h3>
 
-                <p className="text-center text-gray-300 my-2 mx-2 px-2 py-2">
+                <p className="text-center text-gray-300 my-5 mx-2 px-2 py-5">
                     {blog?.description}
                 </p>
 
-                <Link className="text-gray-700 bg-gray-200 my-2 border-2 py-2 rounded-lg border-gray-400 shadow-sm mx-2 px-2" href={`/blogs/update-blog/${blog?.id}`}>Update Blog</Link>
+               <div className="my-4">
+                <Link className="text-gray-700 bg-gray-200 my-4 border-2 py-2 rounded-lg border-gray-400 shadow-sm mx-2  px-2" href={`/blogs/update-blog/${blog?.id}`}>Update Blog</Link>
+               </div> 
+                
 
             </div>
 
-            <div>
+            <div className="my-4 py-3">
                 <CommentAddForm blogId={id} />
             </div>
 
-            <div>
+            <div className="my-4 py-3">
                 <CommentListings blogId={id} />
             </div>
 
