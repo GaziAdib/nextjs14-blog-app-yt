@@ -3,8 +3,9 @@ import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React, { startTransition, useOptimistic, useState } from 'react'
+import React, { useOptimistic, useState, useTransition } from 'react'
 import { toast } from 'react-toastify';
+import { FaThumbsUp } from 'react-icons/fa';
 
 const BlogItem = ({ blog }) => {
 
@@ -14,7 +15,9 @@ const BlogItem = ({ blog }) => {
 
     const session = useSession();
 
-    const userId = session?.data?.user?.id
+    const userId = session?.data?.user?.id;
+
+    const [pending, startTransition] = useTransition();
 
 
     const [likeCount, setLikeCount] = useState(likes);
@@ -37,19 +40,21 @@ const BlogItem = ({ blog }) => {
      
 
     const addLikes = async (blogId) => {
-        console.log('blog id', blogId);
-    
-
+       
         try {
 
             // add optimistic likes 
 
             var likeChange = userHasLiked ? -1 : 1;
-            addOptimisticLikes(likeChange);
-            
+
+            startTransition(() => {
+                addOptimisticLikes(likeChange);
+            })
+
             likeChange === 1 ? setLikeCount((prev) => prev + 1) :  setLikeCount((prev) => prev - 1)
 
             setUserHasLiked(!userHasLiked);
+            
         
 
             const res = await fetch(`/api/blog/add-like/${blogId}`,{
@@ -65,8 +70,9 @@ const BlogItem = ({ blog }) => {
                 const data = await res.json();
                 startTransition(() => {
                     setLikeCount(data.data);
-                    addOptimisticLikes(userHasLiked ? -1 : 1);
+                    addOptimisticLikes(likeChange);
                 })
+               
                 toast.success(`${data.message}`, {
                             position: "top-right",
                             autoClose: 3000,
@@ -85,14 +91,18 @@ const BlogItem = ({ blog }) => {
                 startTransition(() => {
                     setLikeCount((prevCount) => prevCount - likeChange); // Revert optimistic update
                     setUserHasLiked(userHasLiked);
+                    
                 });
+                
+                
                 
             }
         } catch (error) {
            console.log('error', error);
-           startTransition(() => {
+            startTransition(() => {
             setLikeCount((prevCount) => prevCount - likeChange); // Revert optimistic update
             setUserHasLiked(userHasLiked);
+            
         });
            
         }
@@ -213,7 +223,16 @@ const BlogItem = ({ blog }) => {
 
             <button type='button' onClick={() => deleteBlogHandler(id)} className='rounded-lg bg-red-700 text-center px-2 py-1  mt-4'>delete</button>
 
-            <button type='button' onClick={() => addLikes(id)} className='rounded-lg cursor-pointer mx-2 bg-green-700 text-center px-2 py-1  mt-4'>like 👍</button>
+            <button type='button' onClick={() => addLikes(id)} className='rounded-lg cursor-pointer mx-2  bg-gray-800 text-center px-2 py-2  mt-6'>
+                <FaThumbsUp 
+                    size={'24'} 
+                    style={{ color: userHasLiked ? 'blue' : 'white' }} 
+                />
+            </button>
+
+         
+
+            {userHasLiked ? <p className='text-white px-2 py-2'>you liked this blog!</p> : ''}
 
             <button type='button' onClick={() => addVote(id)} className='rounded-lg cursor-pointer mx-2 bg-purple-700 text-center px-2 py-1  mt-4'>Vote me!</button>
         </div>
