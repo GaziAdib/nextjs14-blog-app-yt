@@ -54,13 +54,15 @@ export async function PUT(req, { params }) {
             });
         }
 
-        revalidateTag('likes');
+       
 
         const message = userLiked ? 'Removed like from this blog' : 'Added like to this blog';
         return NextResponse.json({ message, data: updatedBlog.likes }, { status: 200 });
     } catch (error) {
         console.error("Error while updating likes", error);
         return NextResponse.json({ message: 'Error occurred while liking this blog' }, { status: 500 });
+    } finally {
+        revalidateTag('likes');
     }
 }
 

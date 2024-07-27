@@ -33,12 +33,14 @@ export async function PUT(req, { params }) {
             select: { id: true, upvotes:true },
         });
 
-        revalidateTag('upvotes');
+        // revalidateTag('upvotes');
 
         return NextResponse.json({ message: 'Upvote Added', data: updatedBlog.upvotes }, { status: 200 });
     } catch (error) {
         console.error("Error while updating likes", error);
         return NextResponse.json({ message: 'Error occurred while Voting this blog' }, { status: 500 });
+    } finally {
+        revalidateTag('upvotes');
     }
 }
 

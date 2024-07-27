@@ -66,42 +66,47 @@ const BlogItem = ({ blog }) => {
                 cache: 'no-store',
             });
 
+            if(!res.ok) {
+                const errorData = await res.json();
+                console.log('Something went wrong:', errorData);
+                startTransition(() => {
+                    //setUserHasLiked(userHasLiked);
+                    //likeChange === 1 ? setLikeCount((prev) => prev + 1) :  setLikeCount((prev) => prev - 1)
+                    setLikeCount((prevCount) => Math.abs(prevCount - likeChange)); // Revert optimistic update
+                    addOptimisticLikes(likeChange);
+                   
+                    //setUserHasLiked(userHasLiked);
+                    
+                });
+            }
+
             if (res.ok) {
                 const data = await res.json();
                 startTransition(() => {
                     setLikeCount(data.data);
-                    addOptimisticLikes(likeChange);
+                    // addOptimisticLikes(likeChange);
                 })
                
                 toast.success(`${data.message}`, {
-                            position: "top-right",
-                            autoClose: 3000,
-                            hideProgressBar: false,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                            theme: "dark",
-                    });
-                //  router.refresh();
-
-            } else {
-                const errorData = await res.json();
-                console.log('Something went wrong:', errorData);
-                startTransition(() => {
-                    setLikeCount((prevCount) => prevCount - likeChange); // Revert optimistic update
-                    setUserHasLiked(userHasLiked);
-                    
+                        position: "top-right",
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
                 });
-                
-                
-                
-            }
+               
+
+            } 
         } catch (error) {
            console.log('error', error);
             startTransition(() => {
-            setLikeCount((prevCount) => prevCount - likeChange); // Revert optimistic update
-            setUserHasLiked(userHasLiked);
+            setLikeCount((prevCount) => Math.abs(prevCount - likeChange)); // Revert optimistic update
+            // setUserHasLiked(userHasLiked);
+            //likeChange === 1 ? setLikeCount((prev) => prev + 1) :  setLikeCount((prev) => prev - 1)
+            addOptimisticLikes(likeChange);
             
         });
            
@@ -163,6 +168,8 @@ const BlogItem = ({ blog }) => {
                 cache: 'no-store',
             });
 
+         
+
             if (res.ok) {
                 const data = await res.json();
 
@@ -184,16 +191,17 @@ const BlogItem = ({ blog }) => {
                     
             } else {
                 const errorData = await res.json();
-                console.log('Something went wrong in else block');
+                console.log('Something went wrong');
                 startTransition(() => {
-                    addOptimisticUpvote(-1)
+                    addOptimisticUpvote(-1);
+                    setVoteCount((prev) => prev-1);
                 })
-                
             }
         } catch (error) {
            console.log('error', error);
            startTransition(() => {
             addOptimisticUpvote(-1)
+            setVoteCount((prev) => prev-1);
         })
         }
     }
