@@ -140,7 +140,7 @@ export const fetchComments = async (blogId) => {
     const comments = await prisma.comment.findMany({
         where: {
             blogId: blogId
-        },
+        }, 
         orderBy: {
             createdAt: 'desc'
         },
@@ -170,12 +170,19 @@ export const deleteComment = async (commentId, blogId) => {
 
 
     if (session?.user?.id === commentData?.authorId) {
-        await prisma.comment.delete({
-            where: {
-                id: commentId
-            }
-        })
-        revalidatePath(`/blogs/${blogId}`)
+
+        try {
+            await prisma.comment.delete({
+                where: {
+                    id: commentId
+                }
+            })
+        } catch (error) {
+            console.log('error', error)
+        } finally {
+            revalidatePath(`/blogs/${blogId}`);
+        }
+        
     } else {
         console.log('You Are Not Authorize to Delete This Comment!');
     }

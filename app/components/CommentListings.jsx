@@ -2,7 +2,7 @@
 
 import CommentItem from "./CommentItem";
 
-export const CommentListings = ({ optimisticComments }) => {
+export const CommentListings = ({ optimisticComments, deleteOptimisticComment }) => {
 
     return (
         <div className="">
@@ -11,7 +11,7 @@ export const CommentListings = ({ optimisticComments }) => {
 
             {
                 optimisticComments?.length > 0 ? optimisticComments?.map((comment) => {
-                    return <CommentItem key={comment?.id} comment={comment} />
+                    return <CommentItem key={comment?.id} comment={comment} deleteOptimisticComment={deleteOptimisticComment} />
                 }) : <p className="text-center mx-auto text-red-600 mb-5">There is no comments left...😥</p>
             }
 

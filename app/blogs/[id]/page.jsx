@@ -1,5 +1,4 @@
-import { fetchSingleBlog } from "@/actions/actions";
-import { CommentListings } from "@/app/components/CommentListings";
+import { fetchComments, fetchSingleBlog } from "@/actions/actions";
 import CommentAddForm from "@/app/components/forms/CommentAddForm";
 import Image from "next/image";
 import Link from "next/link";
@@ -47,7 +46,7 @@ const BlogDetail = async ({ params }) => {
             </div>
 
             <div className="my-4 py-3">
-                <CommentAddForm comments={blog.comments} blogId={blog.id}/>
+                <CommentAddForm comments={blog.comments} blogId={blog.id} />
             </div>
 
 

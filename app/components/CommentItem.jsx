@@ -1,12 +1,12 @@
 "use client";
-import { deleteComment } from "@/actions/actions";
 import Button from "../ui/Button";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 
-const CommentItem = ({ comment }) => {
+const CommentItem = ({ comment, deleteOptimisticComment }) => {
 
     const session = useSession();
+
 
     const { id, text, authorId, blogId } = comment || {};
 
@@ -19,7 +19,9 @@ const CommentItem = ({ comment }) => {
         const isDelete = confirm(`Are you sure you want to delete this comment with id: ${id}`)
 
         if (isDelete) {
-            await deleteComment(commentId, blogId)
+
+        //    await deleteComment(commentId, blogId);
+        await deleteOptimisticComment(commentId, blogId);
 
             toast.error('Comment Deleted!', {
                 position: "top-right",
@@ -60,7 +62,7 @@ const CommentItem = ({ comment }) => {
                     </div>
 
                     {/* User Name */}
-                    <div className="font-bold text-gray-200">{authorId}</div>
+                    <div className="font-bold text-gray-200">{session?.data?.user?.username}</div>
                 </div>
 
                 {/* Comment Content */}

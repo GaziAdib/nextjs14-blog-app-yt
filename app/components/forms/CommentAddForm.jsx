@@ -1,6 +1,6 @@
 "use client"
 
-import { addCommentToBlog } from "@/actions/actions"
+import { addCommentToBlog, deleteComment, fetchComments } from "@/actions/actions"
 import Button from "@/app/ui/Button"
 import Image from "next/image"
 import { useOptimistic, useRef, useTransition } from "react"
@@ -14,18 +14,14 @@ const CommentAddForm = ({ comments, blogId }) => {
 
     // add optimisticAddComment
 
-    const [pending, startTransition] = useTransition();
+    const [isPending, startTransition] = useTransition();
 
-    const [optimisticComments, addOptimisticComment] = useOptimistic(
+
+    const [optimisticComments, setOptimisticComments] = useOptimistic(
         comments,
-        (state, newComment) => {
-            return [...state, newComment];
-        }
-    )
-
-
-    
-
+        (state, newComment) => [...state, newComment]
+    );
+   
 
     // add comment feature
     const addCommentHandler = async (formData) => {
@@ -34,16 +30,20 @@ const CommentAddForm = ({ comments, blogId }) => {
 
 
         // optimistically add comment instantly to user
-        addOptimisticComment({
-            id: Math.random(),
-            authorId: Math.random(),
-            text: text
+        startTransition(() => {
+            setOptimisticComments(
+                {
+                    id: Math.random(),
+                    authorId: Math.random(),
+                    text: text,
+                },
+            );
         })
-        
+
         // add comment to a blog 
         await addCommentToBlog(blogId, formData)
         ref?.current?.reset();
-
+        
         toast.success('New Comment Added', {
             position: "top-right",
             autoClose: 3000,
@@ -55,6 +55,21 @@ const CommentAddForm = ({ comments, blogId }) => {
             theme: "dark",
         });
     }
+
+    const deleteOptimisticComment = async (commentId, blogId) => {
+      
+         // Optimistically remove the comment
+         startTransition(() => {
+            setOptimisticComments((prevComments) => 
+                 prevComments.filter(comment => comment.id !== commentId)
+            );
+        });
+
+        // Delete the comment from the blog
+        await deleteComment(commentId, blogId);
+
+       
+    };
 
     return (
         <>
@@ -88,7 +103,7 @@ const CommentAddForm = ({ comments, blogId }) => {
             </form>
 
             <div className="my-5 py-5">
-                <CommentListings optimisticComments={optimisticComments} />
+                <CommentListings optimisticComments={optimisticComments} deleteOptimisticComment={deleteOptimisticComment} />
             </div>
         </>
 
