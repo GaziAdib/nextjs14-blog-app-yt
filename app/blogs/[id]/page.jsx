@@ -47,12 +47,13 @@ const BlogDetail = async ({ params }) => {
             </div>
 
             <div className="my-4 py-3">
-                <CommentAddForm blogId={id} />
+                <CommentAddForm comments={blog.comments} blogId={blog.id}/>
             </div>
 
-            <div className="my-4 py-3">
+
+            {/* <div className="my-4 py-3">
                 <CommentListings blogId={id} />
-            </div>
+            </div> */}
 
         </div>
     )

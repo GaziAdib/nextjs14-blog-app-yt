@@ -17,7 +17,8 @@ export const fetchSingleBlog = async (id) => {
     const blogs = await prisma.blog.findFirst({
         where: {
             id: id
-        }
+        },
+        include: {comments: true},
     });
     return blogs
 }
@@ -109,15 +110,23 @@ export const addCommentToBlog = async (blogId, formData) => {
     const session = await getServerSession(authOptions);
 
     // push the data into the DB
-    const added_comment = await prisma.comment.create({
-        data: {
-            authorId: session?.user?.id,
-            blogId: blogId,
-            text: text
-        }
-    })
-    revalidatePath(`/blogs/${blogId}`)
-    redirect(`/blogs/${blogId}`)
+
+    try {
+        const added_comment = await prisma.comment.create({
+            data: {
+                authorId: session?.user?.id,
+                blogId: blogId,
+                text: text
+            }
+        })
+        
+    } catch (error) {
+        console.log('error', error);
+    }
+     finally {
+        revalidatePath(`/blogs/${blogId}`)
+    } 
+   
 }
 
 
@@ -166,7 +175,6 @@ export const deleteComment = async (commentId, blogId) => {
                 id: commentId
             }
         })
-
         revalidatePath(`/blogs/${blogId}`)
     } else {
         console.log('You Are Not Authorize to Delete This Comment!');

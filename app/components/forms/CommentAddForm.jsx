@@ -3,16 +3,44 @@
 import { addCommentToBlog } from "@/actions/actions"
 import Button from "@/app/ui/Button"
 import Image from "next/image"
-import { useRef } from "react"
+import { useOptimistic, useRef, useTransition } from "react"
 import { toast } from "react-toastify"
+import { CommentListings } from "../CommentListings"
 
-const CommentAddForm = ({ blogId }) => {
+
+const CommentAddForm = ({ comments, blogId }) => {
 
     const ref = useRef();
+
+    // add optimisticAddComment
+
+    const [pending, startTransition] = useTransition();
+
+    const [optimisticComments, addOptimisticComment] = useOptimistic(
+        comments,
+        (state, newComment) => {
+            return [...state, newComment];
+        }
+    )
+
+
+    
 
 
     // add comment feature
     const addCommentHandler = async (formData) => {
+
+        const text = formData.get('text');
+
+
+        // optimistically add comment instantly to user
+        addOptimisticComment({
+            id: Math.random(),
+            authorId: Math.random(),
+            text: text
+        })
+        
+        // add comment to a blog 
         await addCommentToBlog(blogId, formData)
         ref?.current?.reset();
 
@@ -58,6 +86,10 @@ const CommentAddForm = ({ blogId }) => {
                     <Button label={'Add Comment'} color={'green'} />
                 </div>
             </form>
+
+            <div className="my-5 py-5">
+                <CommentListings optimisticComments={optimisticComments} />
+            </div>
         </>
 
     )
