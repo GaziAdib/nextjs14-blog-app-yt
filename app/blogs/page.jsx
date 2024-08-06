@@ -13,8 +13,8 @@ const Blogs = async ({searchParams}) => {
     const blogs = await prisma.blog.findMany({
         where: query ? {
             OR: [
-                { title: { contains: query } },
-                { category: { contains: query } },
+                { title: { contains: query, mode: 'insensitive' } },
+                { category: { contains: query, mode: 'insensitive' } },
             ],
 
         } : {} // fetch all the data blogs
